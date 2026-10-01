@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phát | Tìm hiểu sơ về Phát</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  overflow-x:hidden;
+  background:black;
+  color:white;
+}
+
+/* ===== GALAXY FULL SCREEN ===== */
+#bg{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
+  z-index:-2;
+}
+
+/* dark overlay */
+#overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  z-index:-1;
+}
+
+/* ===== INTRO ===== */
+#intro{
+  position:fixed;
+  inset:0;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:9999;
+  text-align:center;
+}
+
+#typing{
+  font-size:42px;
+  font-weight:bold;
+  color:#facc15;
+  max-width:80%;
+  line-height:1.5;
+}
+
+.fadeOut{
+  opacity:0;
+  transition:2s;
+}
+
+/* ===== MAIN ===== */
+#main{
+  display:none;
+  position:relative;
+  z-index:2;
+}
+
+/* ===== HEADER ===== */
+header{
+  text-align:center;
+  padding:60px 20px 20px;
+}
+
+.avatar{
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  object-fit:cover;
+  border:4px solid #38bdf8;
+}
+
+h1{
+  margin:10px 0 5px;
+}
+
+/* ===== ABOUT SECTION ===== */
+.section{
+  max-width:1000px;
+  margin:0 auto;
+  padding:20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:rgba(255,255,255,0.08);
+  padding:20px;
+  border-radius:15px;
+  backdrop-filter:blur(10px);
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:scale(1.05);
+}
+</style>
+</head>
+
+<body>
+
+<!-- GALAXY -->
+<canvas id="bg"></canvas>
+<div id="overlay"></div>
+
+<!-- INTRO -->
+<div id="intro">
+  <div id="typing"></div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+<header>
+  <img src="Phát.jpg" class="avatar">
+  <h1>Phát - Pro Coder 😎</h1>
+  <p>Developer • Student • Dreamer</p>
+</header>
+
+<!-- ABOUT -->
+<div class="section">
+
+  <div class="card">
+    <h2>👤 Giới thiệu</h2>
+    <p>Tôi làm mọi thứ để bản thân tốt hơn 😎</p>
+  </div>
+
+  <div class="card">
+    <h2>😎 Tính cách</h2>
+    <p>Siêu thân thiện</p>
+    <p>Thích cái gì là ghiền cái đó luôn</p>
+    <p>Mê gái🤡</p>
+  </div>
+
+  <div class="card">
+    <h2>🎯 Sở thích</h2>
+    <p>⚽ Coi phim</p>
+    <p>🎧 Nghe nhạc buồn giả bộ buồn theo</p>
+    <p>💻 Code web</p>
+  </div>
+
+  <div class="card">
+    <h2>🔥 Thế mạnh</h2>
+    <p>Game và calisthenic</p>
+    <p>Học cũng được</p>
+    <p>Google + ChatGPT 😆</p>
+  </div>
+
+</div>
+
+</div>
+
+<script>
+
+/* =========================
+   CINEMATIC INTRO (ONCE ONLY)
+========================= */
+const text=[
+" Website này giúp bạn hiểu sơ về Phát...",
+"Nếu bạn thắc mắc Phát như nào...",
+"Hãy xem phần giới thiệu này...",
+"Giờ thì xem thôi nào 👨‍💻"
+];
+
+let i=0;
+let j=0;
+
+function typing(){
+  const el=document.getElementById("typing");
+
+  if(i < text.length){
+    el.innerHTML = text[i].substring(0,j++);
+
+    if(j > text[i].length){
+      j=0;
+      i++;
+
+      if(i < text.length){
+        setTimeout(typing,900);
+      } else {
+        setTimeout(endIntro,1200);
+      }
+      return;
+    }
+
+    setTimeout(typing,60);
+  }
+}
+typing();
+
+/* END INTRO */
+function endIntro(){
+  document.getElementById("intro").classList.add("fadeOut");
+
+  setTimeout(()=>{
+    document.getElementById("intro").style.display="none";
+    document.getElementById("main").style.display="block";
+  },2000);
+}
+
+/* =========================
+   3D GALAXY FULL FIX
+========================= */
+const script=document.createElement("script");
+script.src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js";
+document.head.appendChild(script);
+
+script.onload=()=>{
+
+  const scene=new THREE.Scene();
+
+  const camera=new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth/window.innerHeight,
+    0.1,
+    1000
+  );
+
+  const renderer=new THREE.WebGLRenderer({
+    canvas:document.getElementById("bg"),
+    alpha:true
+  });
+
+  // 🔥 FIX QUAN TRỌNG: FULL SCREEN + SHARP
+  renderer.setSize(window.innerWidth,window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+
+  camera.position.z=5;
+
+  const geometry=new THREE.BufferGeometry();
+  const count=3500;
+
+  const positions=new Float32Array(count*3);
+
+  for(let i=0;i<count;i++){
+    positions[i*3]=(Math.random()-0.5)*90;
+    positions[i*3+1]=(Math.random()-0.5)*90;
+    positions[i*3+2]=(Math.random()-0.5)*90;
+  }
+
+  geometry.setAttribute("position",new THREE.BufferAttribute(positions,3));
+
+  const material=new THREE.PointsMaterial({
+    color:0xffffff,
+    size:0.06
+  });
+
+  const stars=new THREE.Points(geometry,material);
+  scene.add(stars);
+
+  function animate(){
+    requestAnimationFrame(animate);
+
+    stars.rotation.y+=0.0004;
+    stars.rotation.x+=0.0002;
+
+    renderer.render(scene,camera);
+  }
+
+  animate();
+
+  // 🔥 FIX RESIZE (QUAN TRỌNG)
+  window.addEventListener("resize",()=>{
+    camera.aspect=window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+  });
+};
+
+</script>
+
+</body>
+</html>
